@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--inline css since it is small-->
+		<style>
+		
+			html{
+				background:black;
+				color:white;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body onload="init();">
+		<!--html structure-->
+		<h1 id="h1"></h1>
+		<h2 id="h2"></h2>
+		<h2 id="h3"></h2>
+		<select id="timeFilter"><br>
+			<option value="-12">GMT-12</option>
+			<option value="-11">GMT-11</option>
+			<option value="-10">GMT-10</option>
+			<option value="-9" >GMT-9</option>
+			<option value="-8" >GMT-8</option>
+			<option value="-7" >GMT-7</option>
+			<option value="-6" >GMT-6</option>
+			<option value="-5" >GMT-5</option>
+			<option value="-4" >GMT-4</option>
+			<option value="-3" >GMT-3</option>
+			<option value="-2" >GMT-2</option>
+			<option value="-1" >GMT-1</option>
+			<option value="+0" >GMT+0</option>
+			<option value="+1" >GMT+1</option>
+			<option value="+2" >GMT+2</option>
+			<option value="+3" >GMT+3</option>
+			<option value="+4" >GMT+4</option>
+			<option value="+5" >GMT+5</option>
+			<option value="+6" >GMT+6</option>
+			<option value="+7" >GMT+7</option>
+			<option value="+8" >GMT+8</option>
+			<option value="+9" >GMT+9</option>
+			<option value="+10">GMT+10</option>
+			<option value="+11">GMT+11</option>
+			<option value="+12">GMT+12</option>
+		</select>
+			
+		<!--inline js-->
+		<script>
+			//Stores the timezone offset
+			var timezoneOffset= 0;
+			//constant for month name mapping
+			const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
+
+			//init method when page loads
+			function init(){
+				//add event listener to select box
+				document.getElementById("timeFilter").addEventListener("change",handleSelection);
+				//set interval function to update date every 1 second
+				setInterval("run();",1000);
+			}
+			
+			//Interval function to update date
+			function run(){
+				//Get new date object
+				var date = new Date();
+				
+				//Extract date components
+				var hrs = date.getUTCHours();
+				var mins = date.getUTCMinutes();
+				var secs = date.getUTCSeconds();
+				var dt = date.getUTCDate();
+				var mon = date.getUTCMonth();
+				var year = date.getUTCFullYear();
+				
+				//construct new date after adding timezone offset
+				date = new Date(year,mon,dt,hrs+timezoneOffset,mins,secs);
+				
+				//Extract date components
+				secs = date.getSeconds();
+				mins = date.getMinutes();
+				hrs = date.getHours();
+				dt = date.getDate();
+				mon = date.getMonth();
+				year = date.getFullYear();
+				
+				//Format date components
+				secs=(secs<10?"0"+secs:secs);
+				mins=(mins<10?"0"+mins:mins);
+				hrs=(hrs<10?"0"+hrs:hrs);
+				dt=(dt<10?"0"+dt:dt);
+				year=(year<1000?(year<100?(year<10?"000"+year:"00"+year):"0"+year):year);
+				
+				//Set Date
+				var h1 = document.getElementById("h1");
+				h1.innerHTML = monthNames[mon]+" "+dt+" "+year;
+				
+				//Set Time
+				var h2 = document.getElementById("h2");
+				h2.innerHTML = hrs+":"+mins+":"+secs;
+			}
+			
+			//Handle events for select box
+			function handleSelection(){
+				var filter = document.getElementById("timeFilter");
+				timezoneOffset = Number(filter.options[filter.selectedIndex].value);
+			}
+		</script>
+	</body>
+</html>
